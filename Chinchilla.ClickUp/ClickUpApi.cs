@@ -25,6 +25,7 @@ namespace Chinchilla.ClickUp
 		/// <summary>
 		/// The Access Token to add during the request
 		/// </summary>
+		///
 		public string AccessToken { get; protected set; }
 
 		#endregion
@@ -331,6 +332,22 @@ namespace Chinchilla.ClickUp
 
 			// execute the request
 			ResponseGeneric<ResponseModelTask, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseModelTask, ResponseError>(client, request);
+			return result;
+		}
+
+		/// <summary>
+		/// Get a tasks by list id
+		/// </summary>
+		/// <param name="paramsGetTasksByListId">param object of get task by id request</param>
+		/// <returns>ResponseGeneric with ResponseModelTasks response object</returns>
+		public ResponseGeneric<ResponseTasks, ResponseError> GetTasksByListId(ParamsGetTasksByListId paramsGetTasksByListId)
+		{
+			var client = new RestClient(_baseAddress);
+			var request = new RestRequest($"list/{paramsGetTasksByListId.ListId}/task", Method.GET);
+			request.AddHeader("authorization", AccessToken);
+
+			// execute the request
+			ResponseGeneric<ResponseTasks, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseTasks, ResponseError>(client, request);
 			return result;
 		}
 

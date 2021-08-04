@@ -24,6 +24,7 @@ set(ClickUpAPI_SOURCES
 	Params/ParamsGetSpaceFolders.cs
 	Params/ParamsGetTaskById.cs
 	Params/ParamsGetTasks.cs
+	Params/ParamsGetTasksByListId.cs
 	Params/ParamsGetTeamById.cs
 	Params/ParamsGetTeamSpaces.cs
 	Params/ParamsGetTeamWebhooks.cs
