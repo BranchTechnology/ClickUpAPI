@@ -45,6 +45,7 @@ set(ClickUpAPI_SOURCES
 	Responses/ResponseTasks.cs
 	Responses/ResponseTeam.cs
 	Responses/ResponseTeamSpaces.cs
+	Responses/ResponseWebhook.cs
 	Responses/ResponseWebhooks.cs
 	Responses/ResponseModel/ResponseModelCustomFields.cs
 	Responses/ResponseModel/ResponseModelDependencyWarning.cs
@@ -53,6 +54,7 @@ set(ClickUpAPI_SOURCES
 	Responses/ResponseModel/ResponseModelFolder.cs
 	Responses/ResponseModel/ResponseModelList.cs
 	Responses/ResponseModel/ResponseModelMultipleAssignees.cs
+	Responses/ResponseModel/ResponseModelPriority.cs
 	Responses/ResponseModel/ResponseModelPriorities.cs
 	Responses/ResponseModel/ResponseModelSpace.cs
 	Responses/ResponseModel/ResponseModelStatus.cs
@@ -60,6 +62,7 @@ set(ClickUpAPI_SOURCES
 	Responses/ResponseModel/ResponseModelTask.cs
 	Responses/ResponseModel/ResponseModelTeam.cs
 	Responses/ResponseModel/ResponseModelTimeEstimates.cs
+	Responses/ResponseModel/ResponseModelTimeTracking.cs
 	Responses/ResponseModel/ResponseModelUser.cs
 	Responses/ResponseModel/ResponseModelWebhook.cs
 	Responses/ResponseModel/ResponseModelWebhookHealth.cs
@@ -83,6 +86,7 @@ list(APPEND ClickUpAPI_DOTNET_REFERENCES
     System.Xml
     System.Xml.Linq
     System.Windows.Forms
+    System.Runtime.Serialization
     #Eto
     #RhinoCommon
     #Rhino.UI
