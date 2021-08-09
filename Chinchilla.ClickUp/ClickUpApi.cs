@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
 using Chinchilla.ClickUp.Helpers;
 using Chinchilla.ClickUp.Params;
 using Chinchilla.ClickUp.Requests;
 using Chinchilla.ClickUp.Responses;
 using Chinchilla.ClickUp.Responses.Model;
+using Chinchilla.ClickUp.Responses.Object;
 using RestSharp;
 
 namespace Chinchilla.ClickUp
@@ -206,6 +209,25 @@ namespace Chinchilla.ClickUp
 		}
 
 		/// <summary>
+        /// Gets an object representing ResponseGenericSpaceFolder
+		/// </summary>
+		/// <param name="spaceId">param space id for folder request</param>
+		/// <returns>List of ResponseObjectFolder</returns>
+		public List<ResponseObjectFolder> GetSpaceFolders(string spaceId)
+		{
+            ParamsGetSpaceFolders paramsGSF = new ParamsGetSpaceFolders(spaceId);
+            var spaceFolderParams = GetSpaceFolders(paramsGSF);
+            var folders = spaceFolderParams.ResponseSuccess.Folders;
+            var objFolders = new List<ResponseObjectFolder>();
+            foreach (var folder in folders)
+            {
+                objFolders.Add(new ResponseObjectFolder(folder));
+            }
+            return objFolders;
+		}
+
+
+		/// <summary>
 		/// Create a folder
 		/// </summary>
 		/// <param name="paramsCreateList">param object of create folder request</param>
@@ -342,13 +364,84 @@ namespace Chinchilla.ClickUp
 		/// <returns>ResponseGeneric with ResponseModelTasks response object</returns>
 		public ResponseGeneric<ResponseTasks, ResponseError> GetTasksByListId(ParamsGetTasksByListId paramsGetTasksByListId)
 		{
+
+            var testResource = $"list/{paramsGetTasksByListId.ListId}/task";
+            var testRequest = new RestRequest(testResource, Method.GET);
+
+            var requestResource = $"list/{paramsGetTasksByListId.ListId}/task";
+            var addedParams = false;
+            if (paramsGetTasksByListId.Archived != null)
+            {
+                if (!addedParams)
+                {
+                    requestResource += "?";
+                    addedParams = true;
+                }
+                requestResource += $"archived={paramsGetTasksByListId.Archived}";
+                testRequest.AddQueryParameter("archived", paramsGetTasksByListId.Archived.ToString());
+            }
+            if (paramsGetTasksByListId.Page != null && paramsGetTasksByListId.Page > 0)
+            {
+                if (!addedParams)
+                {
+                    requestResource += "?";
+                    addedParams = true;
+                }
+                else
+                {
+                    requestResource += "&";
+                }
+                requestResource += $"page={paramsGetTasksByListId.Page}";
+                testRequest.AddQueryParameter("page", paramsGetTasksByListId.Page.ToString());
+            }
+            if (paramsGetTasksByListId.IncludeClosed == true)
+            {
+                if (!addedParams)
+                {
+                    requestResource += "?";
+                    addedParams = true;
+                }
+                else
+                {
+                    requestResource += "&";
+                }
+                requestResource += $"include_closed={paramsGetTasksByListId.IncludeClosed}";
+                testRequest.AddQueryParameter("include_closed", paramsGetTasksByListId.IncludeClosed.ToString());
+            }
+
 			var client = new RestClient(_baseAddress);
-			var request = new RestRequest($"list/{paramsGetTasksByListId.ListId}/task", Method.GET);
+			var request = new RestRequest(requestResource, Method.GET);
 			request.AddHeader("authorization", AccessToken);
 
 			// execute the request
 			ResponseGeneric<ResponseTasks, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseTasks, ResponseError>(client, request);
 			return result;
+		}
+
+		/// <summary>
+		/// Get a tasks by list id
+		/// </summary>
+		/// <param name="paramsGetTasksByListId">param object of get task by id request</param>
+		/// <returns>ResponseGeneric with ResponseModelTasks response object</returns>
+		public List<ResponseObjectTask> GetTasksByListId(string listId, bool includeClosed = true, bool includeArchived = false, int page = 0)
+		{
+            var ParamsGetTasksByListId = new ParamsGetTasksByListId(listId)
+            {
+                IncludeClosed = includeClosed,
+                Archived = includeArchived,
+                Page = page,
+            };
+            var response = GetTasksByListId(ParamsGetTasksByListId);
+			if (response.ResponseSuccess == null)
+            {
+				throw new Exception(response.ResponseError.Err);
+            }
+            var responseObjectTaskList = new List<ResponseObjectTask>();
+            foreach (var responseModelTask in response.ResponseSuccess.Tasks)
+            {
+                responseObjectTaskList.Add(new ResponseObjectTask(responseModelTask));
+            }
+            return responseObjectTaskList;
 		}
 
 		/// <summary>
