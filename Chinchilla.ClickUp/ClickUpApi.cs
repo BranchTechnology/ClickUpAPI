@@ -7,7 +7,6 @@ using Chinchilla.ClickUp.Params;
 using Chinchilla.ClickUp.Requests;
 using Chinchilla.ClickUp.Responses;
 using Chinchilla.ClickUp.Responses.Model;
-using Chinchilla.ClickUp.Responses.Object;
 using RestSharp;
 
 namespace Chinchilla.ClickUp
@@ -213,17 +212,10 @@ namespace Chinchilla.ClickUp
 		/// </summary>
 		/// <param name="spaceId">param space id for folder request</param>
 		/// <returns>List of ResponseObjectFolder</returns>
-		public List<ResponseObjectFolder> GetSpaceFolders(string spaceId)
+		public ResponseGeneric<ResponseSpaceFolders, ResponseError> GetSpaceFolders(string spaceId)
 		{
             ParamsGetSpaceFolders paramsGSF = new ParamsGetSpaceFolders(spaceId);
-            var spaceFolderParams = GetSpaceFolders(paramsGSF);
-            var folders = spaceFolderParams.ResponseSuccess.Folders;
-            var objFolders = new List<ResponseObjectFolder>();
-            foreach (var folder in folders)
-            {
-                objFolders.Add(new ResponseObjectFolder(folder));
-            }
-            return objFolders;
+            return GetSpaceFolders(paramsGSF);
 		}
 
 
@@ -423,7 +415,7 @@ namespace Chinchilla.ClickUp
 		/// </summary>
 		/// <param name="paramsGetTasksByListId">param object of get task by id request</param>
 		/// <returns>ResponseGeneric with ResponseModelTasks response object</returns>
-		public List<ResponseObjectTask> GetTasksByListId(string listId, bool includeClosed = true, bool includeArchived = false, int page = 0)
+		public ResponseGeneric<ResponseTasks, ResponseError> GetTasksByListId(string listId, bool includeClosed = true, bool includeArchived = false, int page = 0)
 		{
             var ParamsGetTasksByListId = new ParamsGetTasksByListId(listId)
             {
@@ -431,17 +423,7 @@ namespace Chinchilla.ClickUp
                 Archived = includeArchived,
                 Page = page,
             };
-            var response = GetTasksByListId(ParamsGetTasksByListId);
-			if (response.ResponseSuccess == null)
-            {
-				throw new Exception(response.ResponseError.Err);
-            }
-            var responseObjectTaskList = new List<ResponseObjectTask>();
-            foreach (var responseModelTask in response.ResponseSuccess.Tasks)
-            {
-                responseObjectTaskList.Add(new ResponseObjectTask(responseModelTask));
-            }
-            return responseObjectTaskList;
+            return GetTasksByListId(ParamsGetTasksByListId);
 		}
 
 		/// <summary>
