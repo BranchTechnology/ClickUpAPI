@@ -20,6 +20,12 @@ namespace Chinchilla.ClickUp.Requests
 		public string Name { get; set; }
 
 		/// <summary>
+		/// Description of the task
+		/// </summary>
+		[JsonProperty("description")]
+		public string Description { get; set; }
+
+		/// <summary>
 		/// Content of the task
 		/// </summary>
 		[JsonProperty("content")]
@@ -30,6 +36,12 @@ namespace Chinchilla.ClickUp.Requests
 		/// </summary>
 		[JsonProperty("assignees")]
 		public List<long> Assignees { get; set; }
+
+		/// <summary>
+		/// List of tags that will be added to this task
+		/// </summary>
+		[JsonProperty("tags")]
+		public List<long> Tags { get; set; }
 
 		/// <summary>
 		/// Status of the task
@@ -50,16 +62,53 @@ namespace Chinchilla.ClickUp.Requests
 		[JsonConverter(typeof(JsonConverterDateTimeMilliseconds))]
 		public DateTime? DueDate { get; set; }
 
-		#endregion
+        [JsonProperty("due_date_time")]
+        public bool? DueDateTime { get; set; }
+
+        [JsonProperty("time_estimate")]
+		[JsonConverter(typeof(JsonConverterDateTimeMilliseconds))]
+        public bool? TimeEstimate { get; set; }
+
+        [JsonProperty("start_date")]
+		[JsonConverter(typeof(JsonConverterDateTimeMilliseconds))]
+        public bool? StartDate { get; set; }
+
+        [JsonProperty("start_date_time")]
+        public bool? StartDateTime { get; set; }
+
+        [JsonProperty("notify_all")]
+        public bool? NotifyAll { get; set; }
+
+        [JsonProperty("check_required_custom_fields")]
+        public bool? CheckRequiredCustomFields { get; set; }
+
+        // Not sure how to specify custom fields yet... seems like an array of structs with a template parameter type... no idea
+
+        #endregion
+
+        #region structs
+        private struct CustomFieldInt
+        {
+            public string id { get; set; }
+            public int value { get; set; } 
+        }
+
+        private struct CustomFieldText
+        {
+            public string id { get; set; }
+            public string value { get; set; } 
+        }
+
+        #endregion  
 
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		/// Constructor of RequestCreateTaskInList
-		/// </summary>
-		/// <param name="name"></param>
-		public RequestCreateTaskInList(string name)
+        /// <summary>
+        /// Constructor of RequestCreateTaskInList
+        /// </summary>
+        /// <param name="name"></param>
+        public RequestCreateTaskInList(string name)
 		{
 			Name = name;
 		}

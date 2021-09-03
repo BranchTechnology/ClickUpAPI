@@ -19,6 +19,8 @@ set(ClickUpAPI_SOURCES
 	Params/ParamsCreateTeamWebhook.cs
 	Params/ParamsEditList.cs
 	Params/ParamsEditTask.cs
+	Params/ParamsEditTaskCustomField.cs
+	Params/ParamsGetListCustomFields.cs
 	Params/ParamsGetFolderlessLists.cs
 	Params/ParamsGetListById.cs
 	Params/ParamsGetSpaceFolders.cs
@@ -35,10 +37,12 @@ set(ClickUpAPI_SOURCES
 	Requests/RequestCreateTeamWebhook.cs
 	Requests/RequestEditList.cs
 	Requests/RequestEditTask.cs
+	Requests/RequestEditTaskCustomField.cs
 	Requests/RequestModel/RequestModelSupportAssignees.cs
 	Responses/ResponseAccessToken.cs
 	Responses/ResponseAuthorizedTeams.cs
 	Responses/ResponseAuthorizedUser.cs
+	Responses/ResponseListCustomFields.cs
 	Responses/ResponseError.cs
 	Responses/ResponseFolderlessLists.cs
 	Responses/ResponseSpaceFolders.cs
@@ -54,6 +58,7 @@ set(ClickUpAPI_SOURCES
 	Responses/ResponseModel/ResponseModelFeatures.cs
 	Responses/ResponseModel/ResponseModelFolder.cs
 	Responses/ResponseModel/ResponseModelList.cs
+	Responses/ResponseModel/ResponseModelListCustomField.cs
 	Responses/ResponseModel/ResponseModelMultipleAssignees.cs
 	Responses/ResponseModel/ResponseModelPriority.cs
 	Responses/ResponseModel/ResponseModelPriorities.cs
