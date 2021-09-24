@@ -143,5 +143,28 @@ namespace Chinchilla.ClickUp.Responses.Model
 		/// </summary>
 		[JsonProperty("url")]
 		public string Url { get; set; }
+
+		[JsonProperty("custom_fields")]
+		public List<CustomField> CustomFields { get; set; }
+
+
+        public class CustomField
+        {
+		    [JsonProperty("id")]
+            public string Id { get; }
+            
+		    [JsonProperty("name")]
+            public string Name { get; }
+            
+		    [JsonProperty("type")]
+            public string Type { get; }
+            
+            public CustomField(string id, string name, string type)
+            {
+                Id = id;
+                Name = name;
+                Type = type;
+            }
+        }
 	}
 }

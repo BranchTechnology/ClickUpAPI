@@ -247,7 +247,9 @@ namespace Chinchilla.ClickUp
 			var request = new RestRequest($"list/{paramsGetListCustomFields.ListId}/field", Method.GET);
 			request.AddHeader("authorization", AccessToken);
 
-			// execute the request
+            // execute the request
+            var requestStringCheck = request.ToString();
+            var response = client.Execute(request);
 			ResponseGeneric<ResponseListCustomFields, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseListCustomFields, ResponseError>(client, request);
 			return result;
         }
@@ -487,6 +489,14 @@ namespace Chinchilla.ClickUp
 			return result;
 		}
 
+		public ResponseGeneric<ResponseModelTask, ResponseError> CreateTaskInList(string listId, string taskName)
+        {
+            ParamsCreateTaskInList paramsCreateTaskInList = new ParamsCreateTaskInList(listId);
+            RequestCreateTaskInList requestCreateTaskInList = new RequestCreateTaskInList(taskName);
+            return CreateTaskInList(paramsCreateTaskInList, requestCreateTaskInList);
+        }
+
+
         public ResponseGeneric<ResponseModelTask, ResponseError> SetTaskCustomField(ParamsEditTaskCustomField paramsEditTaskCustomField, RequestEditTaskCustomField requestData)
         {
 			requestData.ValidateData();
@@ -511,12 +521,6 @@ namespace Chinchilla.ClickUp
 
 
 
-		public ResponseGeneric<ResponseModelTask, ResponseError> CreateTaskInList(string listId, string taskName)
-        {
-            ParamsCreateTaskInList paramsCreateTaskInList = new ParamsCreateTaskInList(listId);
-            RequestCreateTaskInList requestCreateTaskInList = new RequestCreateTaskInList(taskName);
-            return CreateTaskInList(paramsCreateTaskInList, requestCreateTaskInList);
-        }
 
         public ResponseGeneric<ResponseModelTask, ResponseError> AddTaskToList(ParamsEditTask paramsEditTask, ParamsEditList paramsEditList)
         {
