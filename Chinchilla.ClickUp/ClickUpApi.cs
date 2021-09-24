@@ -248,8 +248,6 @@ namespace Chinchilla.ClickUp
 			request.AddHeader("authorization", AccessToken);
 
             // execute the request
-            var requestStringCheck = request.ToString();
-            var response = client.Execute(request);
 			ResponseGeneric<ResponseListCustomFields, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseListCustomFields, ResponseError>(client, request);
 			return result;
         }
@@ -520,6 +518,36 @@ namespace Chinchilla.ClickUp
         }
 
 
+        public ResponseGeneric<ResponseModelTask, ResponseError> 
+        SetTaskCustomFieldRelationship(ParamsEditTaskCustomField paramsEditTaskCustomField, 
+            RequestEditTaskCustomFieldRelationship requestData)
+        {
+			requestData.ValidateData();
+
+			var client = new RestClient(_baseAddress);
+			var createListRequest = new RestRequest(
+                $"task/{paramsEditTaskCustomField.TaskId}/field/{paramsEditTaskCustomField.FieldId}", 
+                Method.POST);
+			createListRequest.AddHeader("authorization", AccessToken);
+			createListRequest.AddJsonBody(requestData);
+
+			// execute the request
+			ResponseGeneric<ResponseModelTask, ResponseError> result = 
+                RestSharperHelper.ExecuteRequest<ResponseModelTask, ResponseError>(client, createListRequest);
+			return result;
+        }
+
+        public ResponseGeneric<ResponseModelTask, ResponseError> 
+        SetTaskCustomFieldRelationship(string taskId, string fieldId, string value)
+        {
+            ParamsEditTaskCustomField paramsEditTaskCustomField = 
+                new ParamsEditTaskCustomField(taskId, fieldId);
+            RequestEditTaskCustomFieldRelationship requestEditTaskCustomFieldRelationship = 
+                new RequestEditTaskCustomFieldRelationship(value);
+            var responseSetTaskCustomField = SetTaskCustomFieldRelationship(paramsEditTaskCustomField, 
+                requestEditTaskCustomFieldRelationship);
+            return responseSetTaskCustomField;
+        }
 
 
         public ResponseGeneric<ResponseModelTask, ResponseError> AddTaskToList(ParamsEditTask paramsEditTask, ParamsEditList paramsEditList)

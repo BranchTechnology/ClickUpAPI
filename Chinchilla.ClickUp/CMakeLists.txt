@@ -38,6 +38,7 @@ set(ClickUpAPI_SOURCES
 	Requests/RequestEditList.cs
 	Requests/RequestEditTask.cs
 	Requests/RequestEditTaskCustomField.cs
+	Requests/RequestEditTaskCustomFieldRelationship.cs
 	Requests/RequestModel/RequestModelSupportAssignees.cs
 	Responses/ResponseAccessToken.cs
 	Responses/ResponseAuthorizedTeams.cs
