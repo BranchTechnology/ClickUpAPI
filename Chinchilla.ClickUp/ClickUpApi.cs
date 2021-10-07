@@ -495,7 +495,7 @@ namespace Chinchilla.ClickUp
         }
 
 
-        public ResponseGeneric<ResponseModelTask, ResponseError> SetTaskCustomField(ParamsEditTaskCustomField paramsEditTaskCustomField, RequestEditTaskCustomFieldDouble requestData)
+        public ResponseGeneric<ResponseModelTask, ResponseError> SetTaskCustomField(ParamsEditTaskCustomField paramsEditTaskCustomField, RequestEditTaskCustomField requestData)
         {
 			requestData.ValidateData();
 
@@ -509,36 +509,13 @@ namespace Chinchilla.ClickUp
 			return result;
         }
 
-        public ResponseGeneric<ResponseModelTask, ResponseError> SetTaskCustomField(string taskId, string fieldId, double value)
+        public ResponseGeneric<ResponseModelTask, ResponseError> SetTaskCustomField(string taskId, string fieldId, object value)
         {
             ParamsEditTaskCustomField paramsEditTaskCustomField = new ParamsEditTaskCustomField(taskId, fieldId);
-            RequestEditTaskCustomFieldDouble requestEditTaskCustomField = new RequestEditTaskCustomFieldDouble(value);
+            RequestEditTaskCustomField requestEditTaskCustomField = new RequestEditTaskCustomField(value);
             var responseSetTaskCustomField = SetTaskCustomField(paramsEditTaskCustomField, requestEditTaskCustomField);
             return responseSetTaskCustomField;
         }
-
-        public ResponseGeneric<ResponseModelTask, ResponseError> SetTaskCustomField(ParamsEditTaskCustomField paramsEditTaskCustomField, RequestEditTaskCustomFieldString requestData)
-        {
-			requestData.ValidateData();
-
-			var client = new RestClient(_baseAddress);
-			var createListRequest = new RestRequest($"task/{paramsEditTaskCustomField.TaskId}/field/{paramsEditTaskCustomField.FieldId}", Method.POST);
-			createListRequest.AddHeader("authorization", AccessToken);
-			createListRequest.AddJsonBody(requestData);
-
-			// execute the request
-			ResponseGeneric<ResponseModelTask, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseModelTask, ResponseError>(client, createListRequest);
-			return result;
-        }
-
-        public ResponseGeneric<ResponseModelTask, ResponseError> SetTaskCustomField(string taskId, string fieldId, string value)
-        {
-            ParamsEditTaskCustomField paramsEditTaskCustomField = new ParamsEditTaskCustomField(taskId, fieldId);
-            RequestEditTaskCustomFieldString requestEditTaskCustomField = new RequestEditTaskCustomFieldString(value);
-            var responseSetTaskCustomField = SetTaskCustomField(paramsEditTaskCustomField, requestEditTaskCustomField);
-            return responseSetTaskCustomField;
-        }
-
 
         public ResponseGeneric<ResponseModelTask, ResponseError> 
         SetTaskCustomFieldRelationship(ParamsEditTaskCustomField paramsEditTaskCustomField, 
