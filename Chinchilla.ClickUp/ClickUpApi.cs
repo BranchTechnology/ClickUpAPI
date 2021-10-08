@@ -373,6 +373,12 @@ namespace Chinchilla.ClickUp
 			return result;
 		}
 
+        public ResponseGeneric<ResponseModelTask, ResponseError> GetTaskById(string taskId)
+        {
+            ParamsGetTaskById paramsGetTaskById = new ParamsGetTaskById(taskId);
+            return GetTaskById(paramsGetTaskById);
+        }
+
 		/// <summary>
 		/// Get a tasks by list id
 		/// </summary>

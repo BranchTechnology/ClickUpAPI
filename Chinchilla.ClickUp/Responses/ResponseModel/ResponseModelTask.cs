@@ -1,5 +1,6 @@
 ﻿using Chinchilla.ClickUp.Helpers;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -167,6 +168,26 @@ namespace Chinchilla.ClickUp.Responses.Model
                 Name = name;
                 Type = type;
                 Value = value;
+            }
+
+            public ResponseModelTask
+            ValueToTask()
+            {
+                /// check if Value can convert to a task
+                if (Value is JArray jArray)
+                {
+                    if (jArray.Count == 1)
+                    {
+                        var item = (JObject)jArray[0];
+                        var task = new ResponseModelTask()
+                        {
+                            Id = item.GetValue("id").ToString(),
+                            Name = item.GetValue("name").ToString(),
+                        };
+                        return task;
+                    }
+                }
+                return null;
             }
         }
 	}
