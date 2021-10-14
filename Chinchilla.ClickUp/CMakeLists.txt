@@ -100,7 +100,7 @@ list(APPEND ClickUpAPI_DOTNET_REFERENCES
 )
 
 set_target_properties(ClickUpAPI PROPERTIES
-	VS_GLOBAL_RootNamespace PartLogger
+	VS_GLOBAL_RootNamespace Chinchilla.ClickUp
     VS_DOTNET_REFERENCES_COPY_LOCAL OFF
     VS_DOTNET_REFERENCES "${ClickUpAPI_DOTNET_REFERENCES}"
     #VS_DOTNET_REFERENCE_RhinoCommon "${Rhino6_EXE_DIR}/RhinoCommon.dll"
