@@ -51,12 +51,12 @@ namespace Chinchilla.ClickUp.CustomFields
             }
             // type must be known to Determine CustomFieldValue and CustomFieldTypeConfig
             Type = fieldType;
-            Value = DetermineCustomFieldValue(valueObject);
-            TypeConfig = DetermineCustomFieldTypeConfig(typeConfigObject);
+            Value = SetCustomFieldValue(valueObject);
+            TypeConfig = SetCustomFieldTypeConfig(typeConfigObject);
         }
 
         private CustomFieldTypeConfig
-        DetermineCustomFieldTypeConfig(object typeConfig)
+        SetCustomFieldTypeConfig(object typeConfig)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace Chinchilla.ClickUp.CustomFields
         }
 
         private CustomFieldValue
-        DetermineCustomFieldValue(object value)
+        SetCustomFieldValue(object value)
         {
             try
             {
@@ -194,6 +194,7 @@ namespace Chinchilla.ClickUp.CustomFields
                         foreach (JObject jObject in jArrayValueListRelationship)
                         {
                             var valueListRelationship = new CustomFieldValueListRelationshipValue()
+
                             {
                                 Id = jObject.GetValue("id").ToString(),
                                 Name = jObject.GetValue("name").ToString(),
@@ -216,6 +217,129 @@ namespace Chinchilla.ClickUp.CustomFields
             catch (Exception e)
             {
                 var debug = true;
+            }
+            return null;
+        }
+
+        public Dictionary<string, string>
+        GetCustomFieldSelection()
+        {
+            var ret = new Dictionary<string, string>();
+            /// This is a pile... but it has to be done.
+            /// Based on the FieldType the return is different... yay
+            /// Some types have useful data in value and some have useful data in typeConfig
+            /// Some need a mix of data from both... super sweet
+            try
+            {
+                switch (Type)
+                {
+                    case FieldType.drop_down:
+                        /// use the taskField.value to get the index of the selected dropdown from TypeConfigOptions
+                        /// return a dictionary with the index and name of the selected dropdown element
+                        if (!(Value is CustomFieldValueDropDown dropDownValue))
+                        {
+                            return null;
+                        }
+                        if (!(TypeConfig is CustomFieldTypeConfigDropDown dropDownTypeConfig))
+                        {
+                            return null;
+                        }
+                        var optionIndex = dropDownValue.Value;
+                        var selectedValue = dropDownTypeConfig.Options[optionIndex];
+                        ret.Add(optionIndex.ToString(), selectedValue.Name);
+                        return ret;
+
+                    case FieldType.labels:
+                        /// use taskField.value to get list of Ids of selected labels from TypeConfigOptions
+                        /// return dictionary of ids and names of the selected labels
+                        if (!(Value is CustomFieldValueLabel labelValue))
+                        {
+                            return null;
+                        }
+                        if (!(TypeConfig is CustomFieldTypeConfigLabel labelTypeConfig))
+                        {
+                            return null;
+                        }
+                        var selectedOptionIds = labelValue.Value;
+                        if (selectedOptionIds == null || selectedOptionIds.Count == 0)
+                        {
+                            return null;
+                        }
+                        var options = labelTypeConfig.Options;
+                        if (options == null || options.Count == 0)
+                        {
+                            return null;
+                        }
+                        var selectedOptions = new List<string>();
+                        foreach (var selectedOptionId in selectedOptionIds)
+                        {
+                            if (selectedOptionId == null || selectedOptionId == "")
+                            {
+                                continue;
+                            }
+                            foreach (var option in options)
+                            {
+                                if (option.Id == selectedOptionId)
+                                {
+                                    ret.Add(selectedOptionId, option.Label);
+                                }
+                            }
+                        }
+                        return ret;
+
+                    case FieldType.list_relationship:
+                        /// use taskField.Value to get the tasks in the list_relationship
+                        /// return a dictionary with the id and name of the related tasks
+                        if (!(Value is CustomFieldValueListRelationship listRelationshipValue))
+                        {
+                            return null;
+                        }
+                        var relatedTasks = listRelationshipValue.Value;
+                        if (relatedTasks == null || relatedTasks.Count == 0)
+                        {
+                            return null;
+                        }
+                        foreach (var task in relatedTasks)
+                        {
+                            if (task.Id == null || task.Id == "")
+                            {
+                                continue;
+                            }
+                            if (task.Name == null || task.Name == "")
+                            {
+                                continue;
+                            }
+                            ret.Add(Id, Name);
+                        }
+                        return ret;
+
+                    case FieldType.number:
+                        /// use the taskField.value to get the set number
+                        /// return a dictionary for whatever reason
+                        if (!(Value is CustomFieldValueNumber numberValue))
+                        {
+                            return null;
+                        }
+                        ret.Add("number", numberValue.Value.ToString());
+                        return ret;
+
+                    case FieldType.url:
+                        /// use the taskField.value to get the set url
+                        /// return a dictionary for whatever reason
+                        if (!(Value is CustomFieldValueUrl urlValue))
+                        {
+                            return ret;
+                        }
+                        ret.Add("url", urlValue.Value.ToString());
+                        return ret;
+
+                    default:
+                        return null;
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
             }
             return null;
         }
