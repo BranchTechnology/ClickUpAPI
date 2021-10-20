@@ -2,9 +2,26 @@ cmake_minimum_required(VERSION 3.15)
 
 set(ClickUpAPI_SOURCES
 	ClickUpApi.cs
+	CustomFields/CustomField.cs
+	CustomFields/CustomFieldTypeConfigs/CustomFieldTypeConfig.cs
+	CustomFields/CustomFieldTypeConfigs/CustomFieldTypeConfigDropDown.cs
+	CustomFields/CustomFieldTypeConfigs/CustomFieldTypeConfigField.cs
+	CustomFields/CustomFieldTypeConfigs/CustomFieldTypeConfigLabel.cs
+	CustomFields/CustomFieldTypeConfigs/CustomFieldTypeConfigListRelationship.cs
+	CustomFields/CustomFieldTypeConfigs/CustomFieldTypeConfigOption.cs
+	CustomFields/CustomFieldTypeConfigs/CustomFieldTypeConfigOptionDropDown.cs
+	CustomFields/CustomFieldTypeConfigs/CustomFieldTypeConfigOptionLabel.cs
+	CustomFields/CustomFieldValues/CustomFieldValue.cs
+	CustomFields/CustomFieldValues/CustomFieldValueDropDown.cs
+	CustomFields/CustomFieldValues/CustomFieldValueLabel.cs
+	CustomFields/CustomFieldValues/CustomFieldValueListRelationship.cs
+	CustomFields/CustomFieldValues/CustomFieldValueListRelationshipValue.cs
+	CustomFields/CustomFieldValues/CustomFieldValueNumber.cs
+	CustomFields/CustomFieldValues/CustomFieldValueUrl.cs
 	Enums/TaskOrderBy.cs
 	Enums/TaskPriority.cs
 	Enums/UserRole.cs
+	Enums/FieldType.cs
 	Helpers/IResponse.cs
 	Helpers/JsonConverterDateTimeMilliseconds.cs
 	Helpers/JsonConverterTimeSpanMilliseconds.cs
