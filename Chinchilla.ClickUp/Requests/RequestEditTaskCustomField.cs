@@ -29,7 +29,6 @@ namespace Chinchilla.ClickUp.Requests
 		{
             Value = value;
 		}
-
 		#endregion
 
 

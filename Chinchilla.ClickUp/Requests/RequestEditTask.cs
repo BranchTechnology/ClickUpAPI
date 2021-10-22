@@ -62,18 +62,19 @@ namespace Chinchilla.ClickUp.Requests
 		#endregion
 
 
-		#region Constructor
+		//#region Constructor
 
-		/// <summary>
-		/// Constructor of RequestEditTask
-		/// </summary>
-		/// <param name="name"></param>
-		public RequestEditTask(string name)
-		{
-			Name = name;
-		}
+            /// Removed Constructor because not all RequestEditTask should edit the name or any other property
+		///// <summary>
+		///// Constructor of RequestEditTask
+		///// </summary>
+		///// <param name="name"></param>
+		//public RequestEditTask(string name)
+		//{
+		//	Name = name;
+		//}
 
-		#endregion
+		//#endregion
 
 
 		#region Public Methods

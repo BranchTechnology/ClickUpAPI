@@ -275,6 +275,14 @@ namespace Chinchilla.ClickUp
 			return result;
 		}
 
+        public ResponseGeneric<ResponseModelList, ResponseError> GetListById(string listId)
+        {
+            ParamsGetListById paramsGetListById = new ParamsGetListById(listId);
+            var response = GetListById(paramsGetListById);
+            return response;
+        }
+
+
 		/// <summary>
 		/// Create List in Folder
 		/// </summary>
@@ -595,6 +603,17 @@ namespace Chinchilla.ClickUp
 			ResponseGeneric<ResponseModelTask, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseModelTask, ResponseError>(client, request);
 			return result;
 		}
+
+        public ResponseGeneric<ResponseModelTask, ResponseError> EditTaskStatus(string taskId, string taskStatus)
+        {
+            ParamsEditTask paramsEditTask = new ParamsEditTask(taskId);
+            RequestEditTask requestEditTask = new RequestEditTask()
+            {
+                Status = taskStatus
+            };
+            var response = EditTask(paramsEditTask, requestEditTask);
+            return response;
+        }
 		#endregion
 
 		#region Webhooks
