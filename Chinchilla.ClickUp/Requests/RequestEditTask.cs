@@ -3,6 +3,7 @@ using Chinchilla.ClickUp.Enums;
 using Chinchilla.ClickUp.Requests.Model;
 using System;
 using Chinchilla.ClickUp.Helpers;
+using System.Collections.Generic;
 
 namespace Chinchilla.ClickUp.Requests
 {
@@ -42,6 +43,12 @@ namespace Chinchilla.ClickUp.Requests
 		/// </summary>
 		[JsonProperty("status")]
 		public string Status { get; set; }
+
+		/// <summary>
+		/// Tags on the Task
+		/// </summary>
+		[JsonProperty("tag")]
+		public string Tag { get; set; }
 
 		[JsonProperty("archived")]
 		public bool IsArchived { get; set; }
