@@ -87,17 +87,30 @@ namespace Chinchilla.ClickUp.Requests
         #endregion
 
         #region structs
-        private struct CustomFieldInt
+        private struct CustomFieldURL
+        {
+            public string id { get; set; }
+            public string value { get; set; }
+        }
+
+        private struct CustomFieldDropDown
         {
             public string id { get; set; }
             public int value { get; set; } 
         }
 
-        private struct CustomFieldText
+        private struct CustomFieldNumber
         {
             public string id { get; set; }
-            public string value { get; set; } 
+            public double value { get; set; } 
         }
+
+        private struct CustomFieldLabel
+        {
+            public string id { get; set; }
+            public List<string> value { get; set; } 
+        }
+
 
         #endregion  
 
