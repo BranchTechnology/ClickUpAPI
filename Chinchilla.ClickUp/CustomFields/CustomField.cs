@@ -309,7 +309,7 @@ namespace Chinchilla.ClickUp.CustomFields
                             {
                                 continue;
                             }
-                            ret.Add(Id, Name);
+                            ret.Add(task.Id, task.Name);
                         }
                         return ret;
 
