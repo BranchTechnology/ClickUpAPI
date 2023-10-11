@@ -1,4 +1,5 @@
 ﻿using Chinchilla.ClickUp.Helpers;
+using Chinchilla.ClickUp.CustomFields;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -143,5 +144,8 @@ namespace Chinchilla.ClickUp.Responses.Model
 		/// </summary>
 		[JsonProperty("url")]
 		public string Url { get; set; }
+
+		[JsonProperty("custom_fields")]
+		public List<CustomField> CustomFields { get; set; }
 	}
 }

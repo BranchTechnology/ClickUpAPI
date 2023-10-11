@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
 using Chinchilla.ClickUp.Helpers;
 using Chinchilla.ClickUp.Params;
 using Chinchilla.ClickUp.Requests;
@@ -25,6 +27,7 @@ namespace Chinchilla.ClickUp
 		/// <summary>
 		/// The Access Token to add during the request
 		/// </summary>
+		///
 		public string AccessToken { get; protected set; }
 
 		#endregion
@@ -147,15 +150,151 @@ namespace Chinchilla.ClickUp
 			ResponseGeneric<ResponseTeam, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseTeam, ResponseError>(client, request);
 			return result;
 		}
-		#endregion
+        #endregion
 
-		#region Spaces
+        #region Tag
+
+        public ResponseGeneric<ResponseModelTag, ResponseError> 
+        SetTaskTag(string taskId, string tagName)
+        {
+            ParamsEditTask paramsEditTask = new ParamsEditTask(taskId);
+            RequestEditTask requestEditTask = new RequestEditTask()
+            {
+                Tag = tagName,
+            };
+            var client = new RestClient(_baseAddress);
+            var request = new RestRequest($"task/{paramsEditTask.TaskId}/tag/{requestEditTask.Tag}", Method.POST);
+            request.AddHeader("authorization", AccessToken);
+            request.AddJsonBody(requestEditTask);
+
+            ResponseGeneric<ResponseModelTag, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseModelTag, ResponseError>(client, request);
+            return result;
+        } 
+
+        #endregion Tag
+
+        #region CustomFields
+        public ResponseGeneric<ResponseListCustomFields, ResponseError> GetListCustomFields(ParamsGetListCustomFields paramsGetListCustomFields)
+        {
+			var client = new RestClient(_baseAddress);
+			var request = new RestRequest($"list/{paramsGetListCustomFields.ListId}/field", Method.GET);
+			request.AddHeader("authorization", AccessToken);
+
+            // execute the request
+			ResponseGeneric<ResponseListCustomFields, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseListCustomFields, ResponseError>(client, request);
+			return result;
+        }
+
+        public ResponseGeneric<ResponseListCustomFields, ResponseError> GetListCustomFields(string listId)
+        {
+            ParamsGetListCustomFields paramsGetListCustomFields = new ParamsGetListCustomFields(listId);
+            var responseGetListCustomFields = GetListCustomFields(paramsGetListCustomFields);
+            return responseGetListCustomFields;
+        }
+
+
+        public ResponseGeneric<ResponseModelTask, ResponseError> SetTaskCustomField(ParamsEditTaskCustomField paramsEditTaskCustomField, RequestEditTaskCustomField requestData)
+        {
+			requestData.ValidateData();
+
+			var client = new RestClient(_baseAddress);
+			var createListRequest = new RestRequest($"task/{paramsEditTaskCustomField.TaskId}/field/{paramsEditTaskCustomField.FieldId}", Method.POST);
+			createListRequest.AddHeader("authorization", AccessToken);
+			createListRequest.AddJsonBody(requestData);
+
+			// execute the request
+			ResponseGeneric<ResponseModelTask, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseModelTask, ResponseError>(client, createListRequest);
+			return result;
+        }
+
+        public ResponseGeneric<ResponseModelTask, ResponseError> SetTaskCustomField(string taskId, string fieldId, object value)
+        {
+            ParamsEditTaskCustomField paramsEditTaskCustomField = new ParamsEditTaskCustomField(taskId, fieldId);
+            RequestEditTaskCustomField requestEditTaskCustomField = new RequestEditTaskCustomField(value);
+            var responseSetTaskCustomField = SetTaskCustomField(paramsEditTaskCustomField, requestEditTaskCustomField);
+            return responseSetTaskCustomField;
+        }
+
+        public ResponseGeneric<ResponseModelTask, ResponseError> SetTaskCustomFieldRelationship(ParamsEditTaskCustomField paramsEditTaskCustomField, RequestEditTaskCustomFieldRelationship requestData)
+        {
+			requestData.ValidateData();
+
+			var client = new RestClient(_baseAddress);
+			var createListRequest = new RestRequest(
+                $"task/{paramsEditTaskCustomField.TaskId}/field/{paramsEditTaskCustomField.FieldId}", 
+                Method.POST);
+			createListRequest.AddHeader("authorization", AccessToken);
+			createListRequest.AddJsonBody(requestData);
+
+			// execute the request
+			ResponseGeneric<ResponseModelTask, ResponseError> result = 
+                RestSharperHelper.ExecuteRequest<ResponseModelTask, ResponseError>(client, createListRequest);
+			return result;
+        }
+
+        public ResponseGeneric<ResponseModelTask, ResponseError> 
+        SetTaskCustomFieldRelationship(string taskId, string fieldId, string value)
+        {
+            ParamsEditTaskCustomField paramsEditTaskCustomField = 
+                new ParamsEditTaskCustomField(taskId, fieldId);
+            RequestEditTaskCustomFieldRelationship requestEditTaskCustomFieldRelationship = 
+                new RequestEditTaskCustomFieldRelationship(value);
+            var responseSetTaskCustomField = SetTaskCustomFieldRelationship(paramsEditTaskCustomField, 
+                requestEditTaskCustomFieldRelationship);
+            return responseSetTaskCustomField;
+        }
+
+
+        public ResponseGeneric<ResponseModelTask, ResponseError> AddTaskToList(ParamsEditTask paramsEditTask, ParamsEditList paramsEditList)
+        {
+            paramsEditTask.ValidateData();
+            paramsEditList.ValidateData();
+
+            var client = new RestClient(_baseAddress);
+            var createListRequest = new RestRequest($"list/{paramsEditList.ListId}/task/{paramsEditTask.TaskId}", Method.POST);
+            createListRequest.AddHeader("authorization", AccessToken);
+
+            // execute the request
+			ResponseGeneric<ResponseModelTask, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseModelTask, ResponseError>(client, createListRequest);
+            return result;
+        }
+
+        public ResponseGeneric<ResponseModelTask, ResponseError> AddTaskToList(string taskId, string listId)
+        {
+            ParamsEditTask paramsEditTask = new ParamsEditTask(taskId);
+            ParamsEditList paramsEditList = new ParamsEditList(listId);
+            var response = AddTaskToList(paramsEditTask, paramsEditList);
+            return response;
+        }
+
+
 		/// <summary>
-		/// Get a team's spaces. This team must be one of the authorized teams for this token.
+		/// Edit Task informations.
 		/// </summary>
-		/// <param name="paramsGetTeamSpace">param object of get team space request</param>
-		/// <returns>ResponseGeneric with ResponseTeamSpace response object</returns>
-		public ResponseGeneric<ResponseTeamSpaces, ResponseError> GetTeamSpaces(ParamsGetTeamSpaces paramsGetTeamSpace)
+		/// <param name="paramsEditTask">param object of Edit Task request</param>
+		/// <param name="requestData">RequestEditTask object</param>
+		/// <returns>ResponseGeneric with ResponseSuccess response object</returns>
+		public ResponseGeneric<ResponseModelTask, ResponseError> EditTask(ParamsEditTask paramsEditTask, RequestEditTask requestData)
+		{
+			var client = new RestClient(_baseAddress);
+			var request = new RestRequest($"task/{paramsEditTask.TaskId}", Method.PUT);
+			request.AddHeader("authorization", AccessToken);
+			request.AddJsonBody(requestData);
+
+			// execute the request
+			ResponseGeneric<ResponseModelTask, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseModelTask, ResponseError>(client, request);
+			return result;
+		}
+
+        #endregion CustomFields
+
+        #region Spaces
+        /// <summary>
+        /// Get a team's spaces. This team must be one of the authorized teams for this token.
+        /// </summary>
+        /// <param name="paramsGetTeamSpace">param object of get team space request</param>
+        /// <returns>ResponseGeneric with ResponseTeamSpace response object</returns>
+        public ResponseGeneric<ResponseTeamSpaces, ResponseError> GetTeamSpaces(ParamsGetTeamSpaces paramsGetTeamSpace)
 		{
 			var client = new RestClient(_baseAddress);
 			var request = new RestRequest($"team/{paramsGetTeamSpace.TeamId}/space", Method.GET);
@@ -205,6 +344,18 @@ namespace Chinchilla.ClickUp
 		}
 
 		/// <summary>
+        /// Gets an object representing ResponseGenericSpaceFolder
+		/// </summary>
+		/// <param name="spaceId">param space id for folder request</param>
+		/// <returns>List of ResponseObjectFolder</returns>
+		public ResponseGeneric<ResponseSpaceFolders, ResponseError> GetSpaceFolders(string spaceId)
+		{
+            ParamsGetSpaceFolders paramsGSF = new ParamsGetSpaceFolders(spaceId);
+            return GetSpaceFolders(paramsGSF);
+		}
+
+
+		/// <summary>
 		/// Create a folder
 		/// </summary>
 		/// <param name="paramsCreateList">param object of create folder request</param>
@@ -226,6 +377,7 @@ namespace Chinchilla.ClickUp
 		#endregion
 
 		#region Lists
+
 		/// <summary>
 		/// Get a list by id
 		/// </summary>
@@ -241,6 +393,14 @@ namespace Chinchilla.ClickUp
 			ResponseGeneric<ResponseModelList, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseModelList, ResponseError>(client, request);
 			return result;
 		}
+
+        public ResponseGeneric<ResponseModelList, ResponseError> GetListById(string listId)
+        {
+            ParamsGetListById paramsGetListById = new ParamsGetListById(listId);
+            var response = GetListById(paramsGetListById);
+            return response;
+        }
+
 
 		/// <summary>
 		/// Create List in Folder
@@ -277,6 +437,12 @@ namespace Chinchilla.ClickUp
 			ResponseGeneric<ResponseFolderlessLists, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseFolderlessLists, ResponseError>(client, request);
 			return result;
 		}
+
+		public ResponseGeneric<ResponseFolderlessLists, ResponseError> GetFolderlessLists(string spaceId)
+        {
+            var paramsGetFolderlessLists = new ParamsGetFolderlessLists(spaceId);
+            return GetFolderlessLists(paramsGetFolderlessLists);
+        }
 
 		/// <summary>
 		/// Create folderless List
@@ -334,6 +500,89 @@ namespace Chinchilla.ClickUp
 			return result;
 		}
 
+        public ResponseGeneric<ResponseModelTask, ResponseError> GetTaskById(string taskId)
+        {
+            ParamsGetTaskById paramsGetTaskById = new ParamsGetTaskById(taskId);
+            return GetTaskById(paramsGetTaskById);
+        }
+
+		/// <summary>
+		/// Get a tasks by list id
+		/// </summary>
+		/// <param name="paramsGetTasksByListId">param object of get task by id request</param>
+		/// <returns>ResponseGeneric with ResponseModelTasks response object</returns>
+		public ResponseGeneric<ResponseTasks, ResponseError> GetTasksByListId(ParamsGetTasksByListId paramsGetTasksByListId)
+		{
+
+            var testResource = $"list/{paramsGetTasksByListId.ListId}/task";
+            var testRequest = new RestRequest(testResource, Method.GET);
+
+            var requestResource = $"list/{paramsGetTasksByListId.ListId}/task";
+            var addedParams = false;
+            if (paramsGetTasksByListId.Archived != null)
+            {
+                if (!addedParams)
+                {
+                    requestResource += "?";
+                    addedParams = true;
+                }
+                requestResource += $"archived={paramsGetTasksByListId.Archived}";
+                testRequest.AddQueryParameter("archived", paramsGetTasksByListId.Archived.ToString());
+            }
+            if (paramsGetTasksByListId.Page != null && paramsGetTasksByListId.Page > 0)
+            {
+                if (!addedParams)
+                {
+                    requestResource += "?";
+                    addedParams = true;
+                }
+                else
+                {
+                    requestResource += "&";
+                }
+                requestResource += $"page={paramsGetTasksByListId.Page}";
+                testRequest.AddQueryParameter("page", paramsGetTasksByListId.Page.ToString());
+            }
+            if (paramsGetTasksByListId.IncludeClosed == true)
+            {
+                if (!addedParams)
+                {
+                    requestResource += "?";
+                    addedParams = true;
+                }
+                else
+                {
+                    requestResource += "&";
+                }
+                requestResource += $"include_closed={paramsGetTasksByListId.IncludeClosed}";
+                testRequest.AddQueryParameter("include_closed", paramsGetTasksByListId.IncludeClosed.ToString());
+            }
+
+			var client = new RestClient(_baseAddress);
+			var request = new RestRequest(requestResource, Method.GET);
+			request.AddHeader("authorization", AccessToken);
+
+			// execute the request
+			ResponseGeneric<ResponseTasks, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseTasks, ResponseError>(client, request);
+			return result;
+		}
+
+		/// <summary>
+		/// Get a tasks by list id
+		/// </summary>
+		/// <param name="paramsGetTasksByListId">param object of get task by id request</param>
+		/// <returns>ResponseGeneric with ResponseModelTasks response object</returns>
+		public ResponseGeneric<ResponseTasks, ResponseError> GetTasksByListId(string listId, bool includeClosed = true, bool includeArchived = false, int page = 0)
+		{
+            var ParamsGetTasksByListId = new ParamsGetTasksByListId(listId)
+            {
+                IncludeClosed = includeClosed,
+                Archived = includeArchived,
+                Page = page,
+            };
+            return GetTasksByListId(ParamsGetTasksByListId);
+		}
+
 		/// <summary>
 		/// Get Tasks of the Team and filter its by optionalParams
 		/// </summary>
@@ -371,23 +620,24 @@ namespace Chinchilla.ClickUp
 			return result;
 		}
 
-		/// <summary>
-		/// Edit Task informations.
-		/// </summary>
-		/// <param name="paramsEditTask">param object of Edit Task request</param>
-		/// <param name="requestData">RequestEditTask object</param>
-		/// <returns>ResponseGeneric with ResponseSuccess response object</returns>
-		public ResponseGeneric<ResponseModelTask, ResponseError> EditTask(ParamsEditTask paramsEditTask, RequestEditTask requestData)
-		{
-			var client = new RestClient(_baseAddress);
-			var request = new RestRequest($"task/{paramsEditTask.TaskId}", Method.PUT);
-			request.AddHeader("authorization", AccessToken);
-			request.AddJsonBody(requestData);
+		public ResponseGeneric<ResponseModelTask, ResponseError> CreateTaskInList(string listId, string taskName)
+        {
+            ParamsCreateTaskInList paramsCreateTaskInList = new ParamsCreateTaskInList(listId);
+            RequestCreateTaskInList requestCreateTaskInList = new RequestCreateTaskInList(taskName);
+            return CreateTaskInList(paramsCreateTaskInList, requestCreateTaskInList);
+        }
 
-			// execute the request
-			ResponseGeneric<ResponseModelTask, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseModelTask, ResponseError>(client, request);
-			return result;
-		}
+        public ResponseGeneric<ResponseModelTask, ResponseError> EditTaskStatus(string taskId, string taskStatus)
+        {
+            ParamsEditTask paramsEditTask = new ParamsEditTask(taskId);
+            RequestEditTask requestEditTask = new RequestEditTask()
+            {
+                Status = taskStatus
+            };
+            var response = EditTask(paramsEditTask, requestEditTask);
+            return response;
+        }
+
 		#endregion
 
 		#region Webhooks
@@ -636,6 +886,7 @@ namespace Chinchilla.ClickUp
 			// execute the request
 			return RestSharperHelper.ExecuteRequestAsync<ResponseModelList, ResponseError>(client, request);
 		}
+
 		#endregion
 
 		#region Tasks

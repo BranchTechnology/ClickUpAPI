@@ -3,6 +3,7 @@ using Chinchilla.ClickUp.Enums;
 using Chinchilla.ClickUp.Requests.Model;
 using System;
 using Chinchilla.ClickUp.Helpers;
+using System.Collections.Generic;
 
 namespace Chinchilla.ClickUp.Requests
 {
@@ -43,6 +44,12 @@ namespace Chinchilla.ClickUp.Requests
 		[JsonProperty("status")]
 		public string Status { get; set; }
 
+		/// <summary>
+		/// Tags on the Task
+		/// </summary>
+		[JsonProperty("tag")]
+		public string Tag { get; set; }
+
 		[JsonProperty("archived")]
 		public bool IsArchived { get; set; }
 
@@ -62,18 +69,19 @@ namespace Chinchilla.ClickUp.Requests
 		#endregion
 
 
-		#region Constructor
+		//#region Constructor
 
-		/// <summary>
-		/// Constructor of RequestEditTask
-		/// </summary>
-		/// <param name="name"></param>
-		public RequestEditTask(string name)
-		{
-			Name = name;
-		}
+            /// Removed Constructor because not all RequestEditTask should edit the name or any other property
+		///// <summary>
+		///// Constructor of RequestEditTask
+		///// </summary>
+		///// <param name="name"></param>
+		//public RequestEditTask(string name)
+		//{
+		//	Name = name;
+		//}
 
-		#endregion
+		//#endregion
 
 
 		#region Public Methods

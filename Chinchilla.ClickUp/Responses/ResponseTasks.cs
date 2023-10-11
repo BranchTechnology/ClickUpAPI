@@ -16,5 +16,8 @@ namespace Chinchilla.ClickUp.Responses
 		/// </summary>
 		[JsonProperty("tasks")]
 		public List<ResponseModelTask> Tasks { get; set; }
-	}
+        [JsonProperty("last_page")]
+        public bool LastPage { get; set; }
+
+    }
 }

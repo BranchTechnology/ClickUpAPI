@@ -1,16 +1,16 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Runtime.Serialization;
 
 namespace Chinchilla.ClickUp.Params
 {
 
-	/// <summary>
-	/// The param object of Get list by id request
-	/// </summary>
-	public class ParamsGetListById
-	{
-		#region Attributes
+    /// <summary>
+    /// The param object of Get List Custom Fields
+    /// </summary>
+    public class ParamsGetListCustomFields
+    {
+        #region Attributes
 
 		/// <summary>
 		/// The List Id 
@@ -19,24 +19,22 @@ namespace Chinchilla.ClickUp.Params
 		[DataMember(Name = "list_id")]
 		public string ListId { get; set; }
 
-		#endregion
+        #endregion
 
-
-		#region Constructor
+        #region Constructor
 
 		/// <summary>
-		/// The constructor of ParamsGetListById
+		/// The constructor of ParamsGetListCustomFields
 		/// </summary>
 		/// <param name="listId"></param>
-		public ParamsGetListById(string listId)
+		public ParamsGetListCustomFields(string listId)
 		{
 			ListId = listId;
 		}
 
-		#endregion
+        #endregion
 
-
-		#region Public Methods
+        #region Public Methods
 
 		/// <summary>
 		/// Method that validate the data insert
@@ -49,6 +47,6 @@ namespace Chinchilla.ClickUp.Params
 			}
 		}
 
-		#endregion
-	}
+        #endregion
+    }
 }
