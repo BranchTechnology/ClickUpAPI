@@ -147,5 +147,8 @@ namespace Chinchilla.ClickUp.Responses.Model
 
 		[JsonProperty("custom_fields")]
 		public List<CustomField> CustomFields { get; set; }
-	}
+
+        [JsonProperty("checklists")]
+        public List<Checklist> Checklists { get; set; }
+    }
 }

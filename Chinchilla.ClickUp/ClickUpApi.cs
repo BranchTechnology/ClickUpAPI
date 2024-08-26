@@ -151,6 +151,27 @@ namespace Chinchilla.ClickUp
 			return result;
 		}
         #endregion
+        #region Checklist
+
+        public ResponseGeneric<ResponseModelTag, ResponseError>
+        UpdateChecklistItem(string checklistId, string checklistItemId, string name, string assignee, bool resolved)
+        {
+            var client = new RestClient(_baseAddress);
+            var request = new RestRequest($"checklist/{checklistId}/checklist_item/{checklistItemId}", Method.PUT);
+            ChecklistItem requestUpdateChecklistItem = new ChecklistItem()
+            {
+                Resolved = resolved,
+                Name = name,
+                Assignee = assignee,
+            };
+            request.AddHeader("authorization", AccessToken);
+            request.AddJsonBody(requestUpdateChecklistItem);
+
+            ResponseGeneric<ResponseModelTag, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseModelTag, ResponseError>(client, request);
+            return result;
+        }
+
+        #endregion Checklist
 
         #region Tag
 
