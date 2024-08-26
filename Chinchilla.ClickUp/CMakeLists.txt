@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.15)
 set(ClickUpAPI_SOURCES
 	ClickUpApi.cs
 	CustomFields/CustomField.cs
+	Checklist/Checklist.cs
 	CustomFields/CustomFieldTypeConfigs/CustomFieldTypeConfig.cs
 	CustomFields/CustomFieldTypeConfigs/CustomFieldTypeConfigDropDown.cs
 	CustomFields/CustomFieldTypeConfigs/CustomFieldTypeConfigField.cs

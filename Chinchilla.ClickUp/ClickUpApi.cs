@@ -151,6 +151,27 @@ namespace Chinchilla.ClickUp
 			return result;
 		}
         #endregion
+        #region Checklist
+
+        public ResponseGeneric<ResponseModelTag, ResponseError>
+        UpdateChecklistItem(string checklistId, string checklistItemId, string name, string assignee, bool resolved)
+        {
+            var client = new RestClient(_baseAddress);
+            var request = new RestRequest($"checklist/{checklistId}/checklist_item/{checklistItemId}", Method.PUT);
+            ChecklistItem requestUpdateChecklistItem = new ChecklistItem()
+            {
+                Resolved = resolved,
+                Name = name,
+                Assignee = assignee,
+            };
+            request.AddHeader("authorization", AccessToken);
+            request.AddJsonBody(requestUpdateChecklistItem);
+
+            ResponseGeneric<ResponseModelTag, ResponseError> result = RestSharperHelper.ExecuteRequest<ResponseModelTag, ResponseError>(client, request);
+            return result;
+        }
+
+        #endregion Checklist
 
         #region Tag
 
@@ -529,6 +550,23 @@ namespace Chinchilla.ClickUp
                 requestResource += $"archived={paramsGetTasksByListId.Archived}";
                 testRequest.AddQueryParameter("archived", paramsGetTasksByListId.Archived.ToString());
             }
+            if (paramsGetTasksByListId.Statuses != null)
+            {
+
+                foreach(var status in paramsGetTasksByListId.Statuses)
+                {
+                    if (!addedParams)
+                    {
+                        requestResource += "?";
+                        addedParams = true;
+                    }
+                    else
+                    {
+                        requestResource += "&";
+                    }
+                    requestResource += $"statuses[]={status}";
+                }
+            }
             if (paramsGetTasksByListId.Page != null && paramsGetTasksByListId.Page > 0)
             {
                 if (!addedParams)
@@ -583,13 +621,34 @@ namespace Chinchilla.ClickUp
             return GetTasksByListId(ParamsGetTasksByListId);
 		}
 
-		/// <summary>
-		/// Get Tasks of the Team and filter its by optionalParams
-		/// </summary>
-		/// <param name="paramsGetTasks">params obkect of get tasks request</param>
-		/// <param name="optionalParams">OptionalParamsGetTask object</param>
-		/// <returns>ResponseGeneric with ResponseTasks response object</returns>
-		public ResponseGeneric<ResponseTasks, ResponseError> GetTasks(ParamsGetTasks paramsGetTasks)
+        /// <summary>
+        /// Get a tasks by list id
+        /// </summary>
+        /// <param name="paramsGetTasksByListId">param object of get task by id request</param>
+        /// <returns>ResponseGeneric with ResponseModelTasks response object</returns>
+        public ResponseGeneric<ResponseTasks, ResponseError> GetTasks(string listId, bool includeClosed = true, bool includeArchived = false, int page = 0, List<string> statuses = null)
+        {
+            if (statuses == null)
+            {
+                throw new ArgumentNullException(nameof(statuses));
+            }
+
+            var ParamsGetTasksByListId = new ParamsGetTasksByListId(listId)
+            {
+                IncludeClosed = includeClosed,
+                Archived = includeArchived,
+                Statuses = statuses,
+                Page = page,
+            };
+            return GetTasksByListId(ParamsGetTasksByListId);
+        }
+        /// <summary>
+        /// Get Tasks of the Team and filter its by optionalParams
+        /// </summary>
+        /// <param name="paramsGetTasks">params obkect of get tasks request</param>
+        /// <param name="optionalParams">OptionalParamsGetTask object</param>
+        /// <returns>ResponseGeneric with ResponseTasks response object</returns>
+        public ResponseGeneric<ResponseTasks, ResponseError> GetTasks(ParamsGetTasks paramsGetTasks)
 		{
 			var client = new RestClient(_baseAddress);
 			var request = new RestRequest($"team/{paramsGetTasks.TeamId}/task", Method.GET);
